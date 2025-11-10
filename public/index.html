@@ -11,20 +11,25 @@
     <meta name="theme-color" content="#6B21A8" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-45799926-9"></script>
+    <link rel="canonical" href="https://kb-net.vercel.app/" />
+    <!-- Google Analytics 4 - Reemplaza G-XXXXXXXXXX con tu ID de GA4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
     </script>
-    <title>kbinet - Impulsa tu presencia digital</title>
+    <title>Kbinet - Impulsa tu presencia digital | Contenido, Diseño y Desarrollo Web</title>
     <meta
       name="description"
-      content="kbinet potencia tu marca y negocio con estrategias de contenido digital, gestión de redes y soluciones creativas. Crece y conecta con tus clientes en el mundo online."
+      content="Kbinet potencia tu marca y negocio con estrategias de contenido digital, gestión de redes y soluciones creativas. Crece y conecta con tus clientes en el mundo online."
     />
-    <meta property="og:site_name" content="kbinet" />
+    <meta name="keywords" content="diseño web, desarrollo web, contenido digital, marketing digital, redes sociales, branding, consultoría digital, El Salvador, presencia digital, estrategia digital" />
+    <meta name="author" content="Kbinet" />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:site_name" content="Kbinet" />
+    <meta property="og:url" content="https://kb-net.vercel.app/" />
     <meta property="og:title" content="kbinet - Impulsa tu presencia digital" />
     <meta
       property="og:description"
@@ -45,9 +50,96 @@
     />
     <meta name="twitter:image"
     content="%PUBLIC_URL%/logo192.png" />
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Kbinet",
+      "url": "https://kb-net.vercel.app",
+      "logo": "https://kb-net.vercel.app/logo192.png",
+      "description": "Startup creativa especializada en contenido, diseño y desarrollo web. Combinamos estrategia, estética y tecnología para ayudar a marcas y negocios a destacarse en el mundo digital.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "SV",
+        "addressLocality": "El Salvador"
+      },
+      "sameAs": [
+        "https://facebook.com/kbinet",
+        "https://twitter.com/kbinet",
+        "https://youtube.com/kbinet"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "availableLanguage": ["Spanish"]
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Kbinet",
+      "url": "https://kb-net.vercel.app"
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "serviceType": "Servicios Digitales",
+      "provider": {
+        "@type": "Organization",
+        "name": "Kbinet"
+      },
+      "areaServed": "Worldwide",
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Servicios Digitales",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Diseño Web"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Desarrollo Web"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Contenido Digital"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Branding"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Consultoría Digital"
+            }
+          }
+        ]
+      }
+    }
+    </script>
   </head>
   <body>
-    <noscript>Debes habilitar JavaScript para usar kbinet.</noscript>
+    <noscript>Debes habilitar JavaScript para usar Kbinet.</noscript>
     <div id="root"></div>
     <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   </body>
