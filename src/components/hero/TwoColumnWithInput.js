@@ -4,6 +4,7 @@ import styled from "styled-components";
 import tw from "twin.macro";
 //eslint-disable-next-line
 import { css } from "styled-components/macro";
+import AnchorLink from "react-anchor-link-smooth-scroll";
 
 import { ReactComponent as SvgDecoratorBlob1 } from "../../images/svg-decorator-blob-7.svg";
 import { ReactComponent as SvgDecoratorBlob4 } from "../../images/svg-decorator-blob-4.svg";
@@ -20,12 +21,10 @@ const Paragraph = tw.p`my-5 lg:my-8 text-base xl:text-lg`;
 
 const Actions = styled.div`
   ${tw`relative max-w-md text-center mx-auto lg:mx-0`}
-  input {
-    ${tw`sm:pr-48 pl-8 py-4 sm:py-5 rounded-full border-2 w-full font-medium focus:outline-none transition duration-300  focus:border-primary-500 hover:border-gray-500`}
-  }
-  button {
-    ${tw`w-full sm:absolute right-0 top-0 bottom-0 bg-primary-500 text-gray-100 font-bold mr-2 my-4 sm:my-2 rounded-full py-4 flex items-center justify-center sm:w-40 sm:leading-none focus:outline-none hover:bg-primary-900 transition duration-300`}
-  }
+`;
+
+const CTAButton = styled(AnchorLink)`
+  ${tw`inline-block w-full sm:w-auto bg-primary-500 text-gray-100 font-bold px-8 py-4 sm:py-5 rounded-full flex items-center justify-center sm:leading-none focus:outline-none hover:bg-primary-900 transition duration-300 text-center`}
 `;
 
 const IllustrationContainer = tw.div`flex justify-center lg:justify-end items-center`;
@@ -174,8 +173,7 @@ export default () => {
               Permite que tus clientes te conozcan y te encuentren, ofreciéndoles tus productos o servicios en los canales de comunicación que utilizan actualmente
             </Paragraph>
             <Actions>
-              <input type="text" placeholder="Tu correo electrónico" />
-              <button>Comenzar</button>
+              <CTAButton href="#contacto">Comenzar</CTAButton>
             </Actions>
           </LeftColumn>
           <RightColumn>
