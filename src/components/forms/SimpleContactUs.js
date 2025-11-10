@@ -57,7 +57,7 @@ export default ({
             {description && <Description>{description}</Description>}
             <Form action={`https://formspree.io/f/${formspreeEndpoint}`} method="POST">
               <Select name="service" required>
-                <option value="">Qué quiere (selección)</option>
+                <option value="">Selecciona un servicio</option>
                 <option value="web-design">Diseño Web</option>
                 <option value="web-development">Desarrollo Web</option>
                 <option value="content">Contenido</option>
@@ -67,7 +67,7 @@ export default ({
               </Select>
               <Input type="text" name="name" placeholder="Tu Nombre" required />
               <Input type="email" name="email" placeholder="Tu Email" required />
-              <Textarea name="message" placeholder="Espacio de comentarios que explique qué es lo que quiere" required />
+              <Textarea name="message" placeholder="Cuéntanos sobre tu proyecto y qué necesitas" required />
               <SubmitButton type="submit">{submitButtonText}</SubmitButton>
             </Form>
           </TextContent>
