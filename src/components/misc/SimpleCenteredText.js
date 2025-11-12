@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { css } from "styled-components/macro"; //eslint-disable-line
 import { Container, ContentWithPaddingXl } from "components/misc/Layouts.js";
 import { SectionHeading } from "components/misc/Headings.js";
-import AnimateOnScroll, { fadeInUp, scaleIn } from "components/misc/AnimateOnScroll.js";
+import AnimateOnScroll, { scaleIn } from "components/misc/AnimateOnScroll.js";
 import anime from "animejs";
 
 const GrayBackgroundContainer = tw(Container)`-mx-8 px-8 bg-gray-100`;
@@ -38,6 +38,7 @@ export default ({
     let animationTimeout = null;
     let lastIntersectionState = false;
     let animationRef = null;
+    const container = containerRef.current;
 
     const animateParagraphs = () => {
       const targets = paragraphsRef.current.filter(ref => ref !== null && ref !== undefined);
@@ -88,14 +89,15 @@ export default ({
       }
     );
 
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
+    if (container) {
+      observer.observe(container);
     }
 
     // Verificar si ya está visible al cargar
     setTimeout(() => {
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
+      const currentContainer = containerRef.current;
+      if (currentContainer) {
+        const rect = currentContainer.getBoundingClientRect();
         if (rect.top < window.innerHeight + 200) {
           lastIntersectionState = true;
           animateParagraphs();
@@ -105,11 +107,14 @@ export default ({
 
     return () => {
       if (animationTimeout) clearTimeout(animationTimeout);
-      if (observer && containerRef.current) {
-        observer.unobserve(containerRef.current);
+      if (observer && container) {
+        observer.unobserve(container);
       }
       if (animationRef) {
-        anime.remove(paragraphsRef.current.filter(ref => ref !== null));
+        const currentParagraphs = paragraphsRef.current.filter(ref => ref !== null);
+        if (currentParagraphs.length > 0) {
+          anime.remove(currentParagraphs);
+        }
       }
     };
   }, [paragraphs.length]);

@@ -5,7 +5,6 @@ import tw from "twin.macro";
 //eslint-disable-next-line
 import { css } from "styled-components/macro";
 import AnchorLink from "react-anchor-link-smooth-scroll";
-import AnimateOnScroll, { fadeInLeft, fadeInRight, fadeInUp } from "components/misc/AnimateOnScroll.js";
 import anime from "animejs";
 
 import { ReactComponent as SvgDecoratorBlob1 } from "../../images/svg-decorator-blob-7.svg";
