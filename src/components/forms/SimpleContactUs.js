@@ -151,15 +151,18 @@ export default ({
 
     return () => {
       if (animationTimeout) clearTimeout(animationTimeout);
-      if (observer && containerRef.current) {
-        observer.unobserve(containerRef.current);
+      const container = containerRef.current;
+      if (observer && container) {
+        observer.unobserve(container);
       }
-      if (formAnimationRef && formRef.current) {
-        const formElements = formRef.current.querySelectorAll('input, select, textarea, button');
+      const form = formRef.current;
+      if (formAnimationRef && form) {
+        const formElements = form.querySelectorAll('input, select, textarea, button');
         anime.remove(formElements);
       }
-      if (imageAnimationRef && imageRef.current) {
-        anime.remove(imageRef.current);
+      const image = imageRef.current;
+      if (imageAnimationRef && image) {
+        anime.remove(image);
       }
     };
   }, [textOnLeft]);

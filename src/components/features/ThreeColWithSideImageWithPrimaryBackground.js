@@ -214,8 +214,11 @@ export default ({
       if (resetTimeout) clearTimeout(resetTimeout);
       if (observer) observer.disconnect();
       if (animationTimelineRef.current) {
-        const targets = cardsRef.current.filter(ref => ref !== null);
-        anime.remove(targets);
+        const cards = cardsRef.current;
+        const targets = cards ? cards.filter(ref => ref !== null) : [];
+        if (targets.length > 0) {
+          anime.remove(targets);
+        }
         animationTimelineRef.current = null;
       }
     };

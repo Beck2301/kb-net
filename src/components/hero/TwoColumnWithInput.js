@@ -5,7 +5,6 @@ import tw from "twin.macro";
 //eslint-disable-next-line
 import { css } from "styled-components/macro";
 import AnchorLink from "react-anchor-link-smooth-scroll";
-import AnimateOnScroll, { fadeInLeft, fadeInRight, fadeInUp } from "components/misc/AnimateOnScroll.js";
 import anime from "animejs";
 
 import { ReactComponent as SvgDecoratorBlob1 } from "../../images/svg-decorator-blob-7.svg";
@@ -421,7 +420,11 @@ export default () => {
       if (animationTimeout) clearTimeout(animationTimeout);
       if (observer) observer.disconnect();
       if (animationTimelineRef.current) {
-        const targets = [headingRef.current, paragraphRef.current, buttonRef.current, imageRef.current].filter(Boolean);
+        const heading = headingRef.current;
+        const paragraph = paragraphRef.current;
+        const button = buttonRef.current;
+        const image = imageRef.current;
+        const targets = [heading, paragraph, button, image].filter(Boolean);
         if (targets.length > 0) {
           try {
             anime.remove(targets);
