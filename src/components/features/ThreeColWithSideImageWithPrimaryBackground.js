@@ -63,6 +63,7 @@ export default ({
     let animationTimeout = null;
     let resetTimeout = null;
     let lastIntersectionState = false;
+    const cards = cardsRef.current;
 
     const animateCards = () => {
       const targets = cardsRef.current.filter(ref => ref !== null && ref !== undefined);
@@ -214,7 +215,6 @@ export default ({
       if (resetTimeout) clearTimeout(resetTimeout);
       if (observer) observer.disconnect();
       if (animationTimelineRef.current) {
-        const cards = cardsRef.current;
         const targets = cards ? cards.filter(ref => ref !== null) : [];
         if (targets.length > 0) {
           anime.remove(targets);

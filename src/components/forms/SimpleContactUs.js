@@ -59,6 +59,9 @@ export default ({
     let lastIntersectionState = false;
     let formAnimationRef = null;
     let imageAnimationRef = null;
+    const container = containerRef.current;
+    const form = formRef.current;
+    const image = imageRef.current;
 
     const animateForm = () => {
       // Cancelar animaciones anteriores
@@ -133,14 +136,15 @@ export default ({
       }
     );
 
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
+    if (container) {
+      observer.observe(container);
     }
 
     // Verificar si ya está visible al cargar
     setTimeout(() => {
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
+      const currentContainer = containerRef.current;
+      if (currentContainer) {
+        const rect = currentContainer.getBoundingClientRect();
         if (rect.top < window.innerHeight + 200) {
           lastIntersectionState = true;
           animateForm();
@@ -150,16 +154,13 @@ export default ({
 
     return () => {
       if (animationTimeout) clearTimeout(animationTimeout);
-      const container = containerRef.current;
       if (observer && container) {
         observer.unobserve(container);
       }
-      const form = formRef.current;
       if (formAnimationRef && form) {
         const formElements = form.querySelectorAll('input, select, textarea, button');
         anime.remove(formElements);
       }
-      const image = imageRef.current;
       if (imageAnimationRef && image) {
         anime.remove(image);
       }

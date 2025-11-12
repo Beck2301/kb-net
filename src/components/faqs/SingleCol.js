@@ -76,6 +76,8 @@ export default ({
     let animationTimeout = null;
     let lastIntersectionState = false;
     let animationRef = null;
+    const container = containerRef.current;
+    const faqs = faqsRef.current;
 
     const animateFAQs = () => {
       const targets = faqsRef.current.filter(ref => ref !== null && ref !== undefined);
@@ -126,14 +128,15 @@ export default ({
       }
     );
 
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
+    if (container) {
+      observer.observe(container);
     }
 
     // Verificar si ya está visible al cargar
     setTimeout(() => {
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
+      const currentContainer = containerRef.current;
+      if (currentContainer) {
+        const rect = currentContainer.getBoundingClientRect();
         if (rect.top < window.innerHeight + 200) {
           lastIntersectionState = true;
           animateFAQs();
@@ -143,12 +146,10 @@ export default ({
 
     return () => {
       if (animationTimeout) clearTimeout(animationTimeout);
-      const container = containerRef.current;
       if (observer && container) {
         observer.unobserve(container);
       }
       if (animationRef) {
-        const faqs = faqsRef.current;
         const targets = faqs ? faqs.filter(ref => ref !== null) : [];
         if (targets.length > 0) {
           anime.remove(targets);

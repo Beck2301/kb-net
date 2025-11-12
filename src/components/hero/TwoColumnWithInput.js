@@ -175,6 +175,10 @@ export default () => {
     let observer = null;
     let animationTimeout = null;
     let isAnimating = false;
+    const heading = headingRef.current;
+    const paragraph = paragraphRef.current;
+    const button = buttonRef.current;
+    const image = imageRef.current;
 
     const animateHero = () => {
       // Verificar que todos los refs existan y sean elementos válidos
@@ -420,10 +424,6 @@ export default () => {
       if (animationTimeout) clearTimeout(animationTimeout);
       if (observer) observer.disconnect();
       if (animationTimelineRef.current) {
-        const heading = headingRef.current;
-        const paragraph = paragraphRef.current;
-        const button = buttonRef.current;
-        const image = imageRef.current;
         const targets = [heading, paragraph, button, image].filter(Boolean);
         if (targets.length > 0) {
           try {
