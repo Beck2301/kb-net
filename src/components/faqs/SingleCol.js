@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import styled from "styled-components";
 import tw from "twin.macro";
@@ -9,6 +9,8 @@ import { Container, ContentWithPaddingXl } from "components/misc/Layouts.js";
 import { ReactComponent as ChevronDownIcon } from "feather-icons/dist/icons/chevron-down.svg";
 import { ReactComponent as SvgDecoratorBlob1 } from "images/svg-decorator-blob-7.svg";
 import { ReactComponent as SvgDecoratorBlob2 } from "images/svg-decorator-blob-8.svg";
+import AnimateOnScroll, { fadeInUp, scaleIn } from "components/misc/AnimateOnScroll.js";
+import anime from "animejs";
 
 const Subheading = tw(SubheadingBase)`mb-4 text-center`;
 const Heading = tw(SectionHeading)`w-full`;
@@ -66,6 +68,89 @@ export default ({
   ]
 }) => {
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(null);
+  const faqsRef = useRef([]);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    let observer = null;
+    let animationTimeout = null;
+    let lastIntersectionState = false;
+    let animationRef = null;
+
+    const animateFAQs = () => {
+      const targets = faqsRef.current.filter(ref => ref !== null && ref !== undefined);
+      if (targets.length === 0) return;
+
+      // Cancelar animación anterior
+      if (animationRef) {
+        anime.remove(targets);
+        animationRef = null;
+      }
+
+      // Resetear estado inicial
+      targets.forEach(target => {
+        if (target) {
+          target.style.opacity = '0';
+          target.style.transform = 'translateX(-30px)';
+        }
+      });
+
+      // Animar después de un pequeño delay
+      animationTimeout = setTimeout(() => {
+        animationRef = anime({
+          targets: targets,
+          opacity: [0, 1],
+          translateX: [-30, 0],
+          duration: 500,
+          easing: 'easeOutExpo',
+          delay: anime.stagger(100),
+        });
+      }, 100);
+    };
+
+    observer = new IntersectionObserver(
+      (entries) => {
+        const isIntersecting = entries[0].isIntersecting;
+        
+        // Solo animar cuando cambia de no-intersecting a intersecting
+        if (isIntersecting && !lastIntersectionState) {
+          if (animationTimeout) clearTimeout(animationTimeout);
+          animateFAQs();
+        }
+        
+        lastIntersectionState = isIntersecting;
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '200px 0px -50px 0px',
+      }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    // Verificar si ya está visible al cargar
+    setTimeout(() => {
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        if (rect.top < window.innerHeight + 200) {
+          lastIntersectionState = true;
+          animateFAQs();
+        }
+      }
+    }, 400);
+
+    return () => {
+      if (animationTimeout) clearTimeout(animationTimeout);
+      if (observer && containerRef.current) {
+        observer.unobserve(containerRef.current);
+      }
+      if (animationRef) {
+        anime.remove(faqsRef.current.filter(ref => ref !== null));
+      }
+    };
+  }, [faqs.length]);
 
   const toggleQuestion = questionIndex => {
     if (activeQuestionIndex === questionIndex) setActiveQuestionIndex(null);
@@ -77,14 +162,38 @@ export default ({
       <ContentWithPaddingXl>
         <Column>
           <HeaderContent>
-            {subheading && <Subheading>{subheading}</Subheading>}
-            <Heading>{heading}</Heading>
-            {description && <Description>{description}</Description>}
+            {subheading && (
+              <AnimateOnScroll
+                animationConfig={fadeInUp}
+                observerOptions={{ threshold: 0.2 }}
+              >
+                <Subheading>{subheading}</Subheading>
+              </AnimateOnScroll>
+            )}
+            <AnimateOnScroll
+              animationConfig={scaleIn}
+              observerOptions={{ threshold: 0.2 }}
+            >
+              <Heading>{heading}</Heading>
+            </AnimateOnScroll>
+            {description && (
+              <AnimateOnScroll
+                animationConfig={{
+                  ...fadeInUp,
+                  delay: 200,
+                }}
+                observerOptions={{ threshold: 0.2 }}
+              >
+                <Description>{description}</Description>
+              </AnimateOnScroll>
+            )}
           </HeaderContent>
-          <FAQSContainer>
+          <FAQSContainer ref={containerRef}>
             {faqs.map((faq, index) => (
               <FAQ
                 key={index}
+                ref={el => faqsRef.current[index] = el}
+                style={{ opacity: 0 }}
                 onClick={() => {
                   toggleQuestion(index);
                 }}

@@ -39,7 +39,7 @@ export default () => {
         <Row>
           <LogoContainer>
             <LogoImg src={logo} alt="Kbinet" />
-            <LogoText>Kbinet</LogoText>
+            <LogoText>KBinet</LogoText>
           </LogoContainer>
           <LinksContainer>
             <Link href="#beneficios">Beneficios</Link>

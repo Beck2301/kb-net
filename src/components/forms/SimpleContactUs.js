@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import tw from "twin.macro";
 import styled from "styled-components";
 import { css } from "styled-components/macro"; //eslint-disable-line
 import { SectionHeading, Subheading as SubheadingBase } from "components/misc/Headings.js";
 import { PrimaryButton as PrimaryButtonBase } from "components/misc/Buttons.js";
 import EmailIllustrationSrc from "images/email-illustration.svg";
+import AnimateOnScroll, { fadeInLeft, fadeInRight, fadeInUp } from "components/misc/AnimateOnScroll.js";
+import anime from "animejs";
 
 const Container = tw.div`relative`;
 const TwoColumn = tw.div`flex flex-col md:flex-row justify-between max-w-screen-xl mx-auto py-20 md:py-24`;
@@ -47,16 +49,153 @@ export default ({
   formspreeEndpoint = "YOUR_FORMSPREE_ENDPOINT_HERE",
   textOnLeft = true,
 }) => {
+  const formRef = useRef(null);
+  const imageRef = useRef(null);
+  const containerRef = useRef(null);
+  const inputsRef = useRef([]);
+
+  useEffect(() => {
+    let observer = null;
+    let animationTimeout = null;
+    let lastIntersectionState = false;
+    let formAnimationRef = null;
+    let imageAnimationRef = null;
+
+    const animateForm = () => {
+      // Cancelar animaciones anteriores
+      if (formAnimationRef) {
+        const formElements = formRef.current?.querySelectorAll('input, select, textarea, button');
+        if (formElements) anime.remove(formElements);
+        formAnimationRef = null;
+      }
+      if (imageAnimationRef && imageRef.current) {
+        anime.remove(imageRef.current);
+        imageAnimationRef = null;
+      }
+
+      // Resetear estado inicial del formulario
+      if (formRef.current) {
+        const formElements = formRef.current.querySelectorAll('input, select, textarea, button');
+        formElements.forEach(el => {
+          el.style.opacity = '0';
+          el.style.transform = 'translateY(20px)';
+        });
+      }
+
+      // Resetear estado inicial de la imagen
+      if (imageRef.current) {
+        imageRef.current.style.opacity = '0';
+        imageRef.current.style.transform = `translateX(${textOnLeft ? '50px' : '-50px'}) scale(0.9)`;
+      }
+
+      // Animar después de un pequeño delay
+      animationTimeout = setTimeout(() => {
+        // Animar el formulario
+        if (formRef.current) {
+          const formElements = formRef.current.querySelectorAll('input, select, textarea, button');
+          formAnimationRef = anime({
+            targets: formElements,
+            opacity: [0, 1],
+            translateY: [20, 0],
+            duration: 400,
+            easing: 'easeOutExpo',
+            delay: anime.stagger(50),
+          });
+        }
+        // Animar la imagen
+        if (imageRef.current) {
+          imageAnimationRef = anime({
+            targets: imageRef.current,
+            opacity: [0, 1],
+            translateX: textOnLeft ? [50, 0] : [-50, 0],
+            scale: [0.9, 1],
+            duration: 600,
+            easing: 'easeOutExpo',
+          });
+        }
+      }, 100);
+    };
+
+    observer = new IntersectionObserver(
+      (entries) => {
+        const isIntersecting = entries[0].isIntersecting;
+        
+        // Solo animar cuando cambia de no-intersecting a intersecting
+        if (isIntersecting && !lastIntersectionState) {
+          if (animationTimeout) clearTimeout(animationTimeout);
+          animateForm();
+        }
+        
+        lastIntersectionState = isIntersecting;
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '200px 0px -50px 0px',
+      }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    // Verificar si ya está visible al cargar
+    setTimeout(() => {
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        if (rect.top < window.innerHeight + 200) {
+          lastIntersectionState = true;
+          animateForm();
+        }
+      }
+    }, 400);
+
+    return () => {
+      if (animationTimeout) clearTimeout(animationTimeout);
+      if (observer && containerRef.current) {
+        observer.unobserve(containerRef.current);
+      }
+      if (formAnimationRef && formRef.current) {
+        const formElements = formRef.current.querySelectorAll('input, select, textarea, button');
+        anime.remove(formElements);
+      }
+      if (imageAnimationRef && imageRef.current) {
+        anime.remove(imageRef.current);
+      }
+    };
+  }, [textOnLeft]);
+
   return (
-    <Container>
+    <Container ref={containerRef}>
       <TwoColumn>
         <TextColumn textOnLeft={textOnLeft}>
           <TextContent>
-            {subheading && <Subheading>{subheading}</Subheading>}
-            <Heading>{heading}</Heading>
-            {description && <Description>{description}</Description>}
-            <Form action={`https://formspree.io/f/${formspreeEndpoint}`} method="POST">
-              <Select name="service" required>
+            {subheading && (
+              <AnimateOnScroll
+                animationConfig={fadeInUp}
+                observerOptions={{ threshold: 0.2 }}
+              >
+                <Subheading>{subheading}</Subheading>
+              </AnimateOnScroll>
+            )}
+            <AnimateOnScroll
+              animationConfig={textOnLeft ? fadeInLeft : fadeInRight}
+              observerOptions={{ threshold: 0.2 }}
+            >
+              <Heading>{heading}</Heading>
+            </AnimateOnScroll>
+            {description && (
+              <AnimateOnScroll
+                animationConfig={{
+                  ...fadeInUp,
+                  delay: 200,
+                }}
+                observerOptions={{ threshold: 0.2 }}
+              >
+                <Description>{description}</Description>
+              </AnimateOnScroll>
+            )}
+            <Form ref={formRef} action={`https://formspree.io/f/${formspreeEndpoint}`} method="POST">
+              <Select name="service" required style={{ opacity: 0 }}>
                 <option value="">Selecciona un servicio</option>
                 <option value="web-design">Diseño Web</option>
                 <option value="web-development">Desarrollo Web</option>
@@ -65,15 +204,15 @@ export default ({
                 <option value="consulting">Consultoría</option>
                 <option value="other">Otro</option>
               </Select>
-              <Input type="text" name="name" placeholder="Tu Nombre" required />
-              <Input type="email" name="email" placeholder="Tu Email" required />
-              <Textarea name="message" placeholder="Cuéntanos sobre tu proyecto y qué necesitas" required />
-              <SubmitButton type="submit">{submitButtonText}</SubmitButton>
+              <Input type="text" name="name" placeholder="Tu Nombre" required style={{ opacity: 0 }} />
+              <Input type="email" name="email" placeholder="Tu Email" required style={{ opacity: 0 }} />
+              <Textarea name="message" placeholder="Cuéntanos sobre tu proyecto y qué necesitas" required style={{ opacity: 0 }} />
+              <SubmitButton type="submit" style={{ opacity: 0 }}>{submitButtonText}</SubmitButton>
             </Form>
           </TextContent>
         </TextColumn>
         <ImageColumn>
-          <Image imageSrc={EmailIllustrationSrc} />
+          <Image ref={imageRef} imageSrc={EmailIllustrationSrc} style={{ opacity: 0 }} />
         </ImageColumn>
       </TwoColumn>
     </Container>
