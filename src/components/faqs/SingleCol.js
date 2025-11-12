@@ -143,11 +143,16 @@ export default ({
 
     return () => {
       if (animationTimeout) clearTimeout(animationTimeout);
-      if (observer && containerRef.current) {
-        observer.unobserve(containerRef.current);
+      const container = containerRef.current;
+      if (observer && container) {
+        observer.unobserve(container);
       }
       if (animationRef) {
-        anime.remove(faqsRef.current.filter(ref => ref !== null));
+        const faqs = faqsRef.current;
+        const targets = faqs ? faqs.filter(ref => ref !== null) : [];
+        if (targets.length > 0) {
+          anime.remove(targets);
+        }
       }
     };
   }, [faqs.length]);

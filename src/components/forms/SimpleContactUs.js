@@ -52,7 +52,6 @@ export default ({
   const formRef = useRef(null);
   const imageRef = useRef(null);
   const containerRef = useRef(null);
-  const inputsRef = useRef([]);
 
   useEffect(() => {
     let observer = null;

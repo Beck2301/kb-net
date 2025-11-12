@@ -39,6 +39,7 @@ export default ({
     let lastIntersectionState = false;
     let animationRef = null;
     const container = containerRef.current;
+    const paragraphs = paragraphsRef.current;
 
     const animateParagraphs = () => {
       const targets = paragraphsRef.current.filter(ref => ref !== null && ref !== undefined);
@@ -111,7 +112,7 @@ export default ({
         observer.unobserve(container);
       }
       if (animationRef) {
-        const currentParagraphs = paragraphsRef.current.filter(ref => ref !== null);
+        const currentParagraphs = paragraphs ? paragraphs.filter(ref => ref !== null) : [];
         if (currentParagraphs.length > 0) {
           anime.remove(currentParagraphs);
         }
